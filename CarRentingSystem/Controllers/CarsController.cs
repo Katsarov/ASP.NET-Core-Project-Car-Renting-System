@@ -71,7 +71,7 @@ namespace CarRentingSystem.Controllers
             this.data.Cars.Add(carData);
             this.data.SaveChanges();
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(All));
         }
 
         private IEnumerable<CarCategoryViewModel> GetCarCategories()
