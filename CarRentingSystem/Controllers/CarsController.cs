@@ -2,6 +2,7 @@
 
 namespace CarRentingSystem.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using CarRentingSystem.Data;
@@ -22,10 +23,23 @@ namespace CarRentingSystem.Controllers
                 Categories = this.GetCarCategories()
             });
 
-        public IActionResult All()
+        public IActionResult All(string brand, string searchTerm)
         {
-            var cars = this.data
-                .Cars
+            var carsQuery = this.data.Cars.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(brand))
+            {
+                carsQuery = carsQuery.Where(c => c.Brand == brand);
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                carsQuery = carsQuery.Where(c =>
+                (c.Brand + " " + c.Model).ToLower().Contains(searchTerm.ToLower()) || 
+                c.Description.ToLower().Contains(searchTerm.ToLower()));
+            }
+
+            var cars = carsQuery
                 .OrderByDescending(c => c.Id)
                 .Select(c => new CarListingViewModel
                 {
@@ -38,7 +52,18 @@ namespace CarRentingSystem.Controllers
                 })
                 .ToList();
 
-            return View(cars);
+            var carBrands = this.data
+                .Cars
+                .Select(c => c.Brand)
+                .Distinct()
+                .ToList();
+
+            return View(new AllCarsQueryModel 
+            { 
+                Brands = carBrands,
+                Cars = cars,
+                SearchTerm = searchTerm
+            });
 
         }
 

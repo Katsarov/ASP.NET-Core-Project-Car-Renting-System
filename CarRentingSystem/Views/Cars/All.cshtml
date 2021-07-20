@@ -1,8 +1,35 @@
-﻿@model IEnumerable<CarListingViewModel>
+﻿@model AllCarsQueryModel
+
+
+<form method="get">
+    <div class="row mb-5">
+        <div class="form-group col-md-4">
+            <div class="form-group">
+                <label asp-for="Brand"></label>
+                <select asp-for="Brand" class="form-control">
+                    @foreach (var brand in Model.Brands)
+                    {
+                        <option value="@brand">@brand</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group col-md-4">
+            <label asp-for="SearchTerm"></label>
+            <input asp-for="SearchTerm" class="form-control" placeholder="VW T_Rock etc...">
+        </div>
+
+        <div class="form-group col-md-3">
+
+        </div>
+    </div>
+
+</form>
 
 
 <div class="row">
-    @foreach (var car in Model)
+    @foreach (var car in Model.Cars)
     {
     <div class="col-md-4">
         <div class="card mb-3">
