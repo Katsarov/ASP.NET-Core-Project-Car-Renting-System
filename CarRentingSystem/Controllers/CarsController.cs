@@ -23,24 +23,30 @@ namespace CarRentingSystem.Controllers
                 Categories = this.GetCarCategories()
             });
 
-        public IActionResult All(string brand, string searchTerm)
+        public IActionResult All([FromQuery]AllCarsQueryModel query)
         {
             var carsQuery = this.data.Cars.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(brand))
+            if (!string.IsNullOrWhiteSpace(query.Brand))
             {
-                carsQuery = carsQuery.Where(c => c.Brand == brand);
+                carsQuery = carsQuery.Where(c => c.Brand == query.Brand);
             }
 
-            if (!string.IsNullOrWhiteSpace(searchTerm))
+            if (!string.IsNullOrWhiteSpace(query.SearchTerm))
             {
                 carsQuery = carsQuery.Where(c =>
-                (c.Brand + " " + c.Model).ToLower().Contains(searchTerm.ToLower()) || 
-                c.Description.ToLower().Contains(searchTerm.ToLower()));
+                (c.Brand + " " + c.Model).ToLower().Contains(query.SearchTerm.ToLower()) ||
+                c.Description.ToLower().Contains(query.SearchTerm.ToLower()));
             }
 
-            var cars = carsQuery
-                .OrderByDescending(c => c.Id)
+            carsQuery = query.Sorting switch
+            {
+                CarSorting.Year => carsQuery.OrderByDescending(c => c.Year),
+                CarSorting.BrandAndModel => carsQuery.OrderBy(c => c.Brand).ThenBy(c => c.Model),
+                CarSorting.DateCreated or _ => carsQuery.OrderByDescending(c => c.Id)
+            };
+
+            var cars = carsQuery 
                 .Select(c => new CarListingViewModel
                 {
                     Id = c.Id,
@@ -56,14 +62,13 @@ namespace CarRentingSystem.Controllers
                 .Cars
                 .Select(c => c.Brand)
                 .Distinct()
+                .OrderBy(br => br)
                 .ToList();
 
-            return View(new AllCarsQueryModel 
-            { 
-                Brands = carBrands,
-                Cars = cars,
-                SearchTerm = searchTerm
-            });
+            query.Brands = carBrands;
+            query.Cars = cars;
+
+            return View(query);
 
         }
 
