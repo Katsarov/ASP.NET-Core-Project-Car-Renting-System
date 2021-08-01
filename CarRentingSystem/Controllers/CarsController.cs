@@ -18,11 +18,6 @@ namespace CarRentingSystem.Controllers
         public CarsController(CarRentingDbContext data) 
             => this.data = data;
 
-        public IActionResult Add() => View(new AddCarFormModel 
-            {
-                Categories = this.GetCarCategories()
-            });
-
         public IActionResult All([FromQuery]AllCarsQueryModel query)
         {
             var carsQuery = this.data.Cars.AsQueryable();
@@ -46,7 +41,11 @@ namespace CarRentingSystem.Controllers
                 CarSorting.DateCreated or _ => carsQuery.OrderByDescending(c => c.Id)
             };
 
+            var totalCars = this.data.Cars.Count();
+
             var cars = carsQuery 
+                .Skip((query.CurrentPage - 1) * AllCarsQueryModel.CarsPerPage)
+                .Take(AllCarsQueryModel.CarsPerPage)
                 .Select(c => new CarListingViewModel
                 {
                     Id = c.Id,
@@ -65,12 +64,18 @@ namespace CarRentingSystem.Controllers
                 .OrderBy(br => br)
                 .ToList();
 
+            query.TotalCars = totalCars;
             query.Brands = carBrands;
             query.Cars = cars;
 
             return View(query);
 
         }
+
+        public IActionResult Add() => View(new AddCarFormModel
+        {
+            Categories = this.GetCarCategories()
+        });
 
         [HttpPost]
         public IActionResult Add(AddCarFormModel car)
