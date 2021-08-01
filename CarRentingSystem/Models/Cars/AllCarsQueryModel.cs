@@ -3,6 +3,7 @@ namespace CarRentingSystem.Models.Cars
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using CarRentingSystem.Services.Cars;
 
     public class AllCarsQueryModel
     {
@@ -21,6 +22,6 @@ namespace CarRentingSystem.Models.Cars
 
         public IEnumerable<string> Brands { get; set; }
 
-        public IEnumerable<CarListingViewModel> Cars { get; set; }
+        public IEnumerable<CarServiceModel> Cars { get; set; }
     }
 }
