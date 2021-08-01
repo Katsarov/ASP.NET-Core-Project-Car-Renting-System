@@ -7,6 +7,7 @@ namespace CarRentingSystem.Controllers
     using System.Linq;
     using CarRentingSystem.Data;
     using CarRentingSystem.Data.Models;
+    using CarRentingSystem.Models;
     using CarRentingSystem.Models.Cars;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
