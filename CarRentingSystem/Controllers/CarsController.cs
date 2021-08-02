@@ -8,6 +8,7 @@ namespace CarRentingSystem.Controllers
     using CarRentingSystem.Data.Models;
     using CarRentingSystem.Models.Cars;
     using CarRentingSystem.Services.Cars;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     public class CarsController : Controller
@@ -48,6 +49,7 @@ namespace CarRentingSystem.Controllers
         });
 
         [HttpPost]
+        [Authorize]
         public IActionResult Add(AddCarFormModel car)
         {
 
