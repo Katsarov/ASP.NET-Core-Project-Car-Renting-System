@@ -72,7 +72,7 @@ namespace CarRentingSystem.Controllers
                 Description = car.Description,
                 ImageUrl = car.ImageUrl,
                 CategoryId = car.CategoryId,
-                Year = car.Year,
+                Year = car.Year
             };
 
             this.data.Cars.Add(carData);
