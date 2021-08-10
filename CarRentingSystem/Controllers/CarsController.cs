@@ -6,6 +6,7 @@ namespace CarRentingSystem.Controllers
     using System.Linq;
     using CarRentingSystem.Data;
     using CarRentingSystem.Data.Models;
+    using CarRentingSystem.Infrastructure;
     using CarRentingSystem.Models.Cars;
     using CarRentingSystem.Services.Cars;
     using Microsoft.AspNetCore.Authorization;
@@ -43,15 +44,36 @@ namespace CarRentingSystem.Controllers
 
         }
 
-        public IActionResult Add() => View(new AddCarFormModel
+        [Authorize]
+        public IActionResult Add()
         {
-            Categories = this.GetCarCategories()
-        });
+            if (!this.UserIsDealer())
+            {
+
+                return RedirectToAction(nameof(DealersController.Become), "Dealers");
+            }
+
+            return View(new AddCarFormModel
+            {
+                Categories = this.GetCarCategories()
+            });
+        }
 
         [HttpPost]
         [Authorize]
         public IActionResult Add(AddCarFormModel car)
         {
+            var dealerId = this.data
+                .Dealers
+                .Where(d => d.UserId == this.User.GetId())
+                .Select(d => d.Id)
+                .FirstOrDefault();
+
+            if (dealerId == 0)
+            {
+
+                return RedirectToAction(nameof(DealersController.Become), "Dealers");
+            }
 
             if (!this.data.Categories.Any(c => c.Id == car.CategoryId))
             {
@@ -71,8 +93,10 @@ namespace CarRentingSystem.Controllers
                 Model = car.Model,
                 Description = car.Description,
                 ImageUrl = car.ImageUrl,
+                Year = car.Year,
                 CategoryId = car.CategoryId,
-                Year = car.Year
+                DealerId = dealerId
+                
             };
 
             this.data.Cars.Add(carData);
@@ -80,6 +104,11 @@ namespace CarRentingSystem.Controllers
 
             return RedirectToAction(nameof(All));
         }
+
+        private bool UserIsDealer()
+            => this.data
+                .Dealers
+                .Any(d => d.UserId == this.User.GetId());
 
         private IEnumerable<CarCategoryViewModel> GetCarCategories()
             => this.data
@@ -91,5 +120,6 @@ namespace CarRentingSystem.Controllers
                 })
                 .ToList();
         
+
     }
 }

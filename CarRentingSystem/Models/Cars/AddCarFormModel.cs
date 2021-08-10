@@ -21,9 +21,9 @@ namespace CarRentingSystem.Models.Cars
         [StringLength(int.MaxValue, MinimumLength = DescriptionMinLength, ErrorMessage = "The field Description must be a string with a minimum length of {2}")]
         public string Description { get; init; }
 
-        [Display(Name = "Image URL")]
         [Required]
         [Url]
+        [Display(Name = "Image URL")]
         public string ImageUrl { get; init; }
 
         [Range(YearMinValue, YearMaxValue)]
