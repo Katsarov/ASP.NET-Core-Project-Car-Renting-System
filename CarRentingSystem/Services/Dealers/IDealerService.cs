@@ -3,6 +3,6 @@
 
     public interface IDealerService
     {
-        public bool IsDealer(string userId);    //Check if current user is dealer
+        public bool IsDealer(string userId);    //Метода проверява дали текущия юзър е дилър или не. Връща TRUE or FALSE
     }
 }

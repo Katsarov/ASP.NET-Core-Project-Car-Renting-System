@@ -23,7 +23,6 @@ namespace CarRentingSystem.Controllers
                 this.data = data;
             }
 
-
         public IActionResult All([FromQuery] AllCarsQueryModel query)
         {
             var queryResult = this.cars.All(
