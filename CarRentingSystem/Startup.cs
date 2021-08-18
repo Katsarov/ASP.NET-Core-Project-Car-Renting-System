@@ -76,6 +76,16 @@ namespace CarRentingSystem
                 .UseAuthorization()
                 .UseEndpoints(endpoints =>
             {
+                // /{area}/{controller}/{action}/{id?}
+
+                // /Cars/All --> това ще ни отвори главния контролер CarsController
+
+                // /Admin/Cars/All  --> това ще отиде в: Admin area -> cars controller
+
+                endpoints.MapControllerRoute(
+                    name: "Areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
             });
