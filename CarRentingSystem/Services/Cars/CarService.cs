@@ -6,6 +6,7 @@ namespace CarRentingSystem.Services.Cars
     using CarRentingSystem.Data;
     using CarRentingSystem.Data.Models;
     using CarRentingSystem.Models;
+    using CarRentingSystem.Services.Cars.Models;
 
     public class CarService : ICarService
     {
@@ -69,6 +70,7 @@ namespace CarRentingSystem.Services.Cars
                     Description = c.Description,
                     ImageUrl = c.ImageUrl,
                     Year = c.Year,
+                    CategoryId = c.CategoryId,
                     CategoryName = c.Category.Name,
                     DealerId = c.DealerId,
                     DealerName = c.Dealer.Name,
