@@ -19,7 +19,10 @@ namespace CarRentingSystem.Models.Cars
         public string Model { get; init; }
 
         [Required]
-        [StringLength(int.MaxValue, MinimumLength = DescriptionMinLength, ErrorMessage = "The field Description must be a string with a minimum length of {2}")]
+        [StringLength(
+            int.MaxValue, 
+            MinimumLength = DescriptionMinLength, 
+            ErrorMessage = "The field Description must be a string with a minimum length of {2}")]
         public string Description { get; init; }
 
         [Required]

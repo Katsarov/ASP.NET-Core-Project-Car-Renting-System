@@ -13,7 +13,7 @@ namespace CarRentingSystem.Controllers
     public class HomeController : Controller
     {
         private readonly IStatisticsService statistics;
-        private readonly IMapper mapper;
+        private readonly IConfigurationProvider mapper;
         private readonly CarRentingDbContext data;
 
         public HomeController(
@@ -22,7 +22,7 @@ namespace CarRentingSystem.Controllers
             CarRentingDbContext data)
         {
             this.statistics = statistics;
-            this.mapper = mapper;
+            this.mapper = mapper.ConfigurationProvider;
             this.data = data;
         }
 
@@ -31,7 +31,7 @@ namespace CarRentingSystem.Controllers
             var cars = this.data
                 .Cars
                 .OrderByDescending(c => c.Id)
-                .ProjectTo<CarIndexViewModel>(this.mapper.ConfigurationProvider)
+                .ProjectTo<CarIndexViewModel>(this.mapper)
                 .Take(3)
                 .ToList();
 
