@@ -3,38 +3,47 @@
 namespace CarRentingSystem.Controllers
 {
     using AutoMapper;
-    using CarRentingSystem.Models.Home;
     using CarRentingSystem.Services.Cars;
+    using CarRentingSystem.Services.Cars.Models;
     using CarRentingSystem.Services.Statistics;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Caching.Memory;
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     public class HomeController : Controller
     {
         private readonly ICarService cars;
-        private readonly IStatisticsService statistics;
+        private readonly IMemoryCache cache;
 
         public HomeController(
             ICarService cars,
-            IStatisticsService statistics)
+            IMemoryCache cache)
         {
             this.cars = cars;
-            this.statistics = statistics;
+            this.cache = cache;
         }
             public IActionResult Index()
             {
-                var latestCars = this.cars
-                .Latest()
-                .ToList();
 
-                var totalStatistics = this.statistics.Total();
+            const string latestCarsCacheKey = "LatestCarsCacheKey";
 
-            return View(new IndexViewModel
+            var latestCars = this.cache.Get<List<LatestCarServiceModel>>(latestCarsCacheKey);
+
+            if (latestCars == null)
             {
-                TotalCars = totalStatistics.TotalCars,
-                TotalUsers = totalStatistics.TotalUsers,
-                Cars = latestCars
-            }); ;
+                    latestCars = this.cars
+                    .Latest()
+                    .ToList();
+
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(15));
+
+                this.cache.Set(latestCarsCacheKey, latestCars, cacheOptions);
+            }
+
+            return View(latestCars); 
             }
         
 
