@@ -44,7 +44,9 @@ namespace CarRentingSystem
                 .AddEntityFrameworkStores<CarRentingDbContext>();
 
             services.AddAutoMapper(typeof(Startup));
+
             services.AddMemoryCache();
+            services.AddSession();
 
             services.AddControllersWithViews(options => 
             {
@@ -77,6 +79,7 @@ namespace CarRentingSystem
                 .UseRouting()
                 .UseAuthentication()
                 .UseAuthorization()
+                .UseSession()
                 .UseEndpoints(endpoints =>
             {
                 // /{area}/{controller}/{action}/{id?}
